@@ -4,13 +4,14 @@ import (
 	"ad-server-project/src/domain/model"
 	"ad-server-project/src/repository"
 	"fmt"
+
 	_ "github.com/go-sql-driver/mysql"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func main() {
-	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", "root", "root", "localhost", "3306", "mysql")
+	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", "root", "root", "mysql", "3306", "mysql")
 	db, err := gorm.Open(mysql.Open(connection), &gorm.Config{})
 	if err != nil {
 		fmt.Println("DB connection failed:", err)
@@ -26,5 +27,6 @@ func main() {
 	}
 
 	advertisementRepo := repository.NewAdvertisementRepository(db)
+	fmt.Print(advertisementRepo)
 
 }
