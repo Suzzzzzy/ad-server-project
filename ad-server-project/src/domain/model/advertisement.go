@@ -22,7 +22,7 @@ type Advertisement struct {
 }
 
 type AdvertisementRepository interface {
-	GetByCountryAndGender(c context.Context, user *User) ([]Advertisement, error)
+	GetByCountryAndGender(c context.Context, user *User) ([]map[string]interface{}, error)
 }
 
 type AdvertisementUsecase interface {

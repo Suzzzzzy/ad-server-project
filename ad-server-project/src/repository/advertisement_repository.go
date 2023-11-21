@@ -16,7 +16,11 @@ func NewAdvertisementRepository(db *gorm.DB) model.AdvertisementRepository {
 	}
 }
 
-func (a *advertisementRepository) GetByCountryAndGender(c context.Context, user *model.User) ([]model.Advertisement, error) {
-	//TODO implement me
-	panic("implement me")
+func (a *advertisementRepository) GetByCountryAndGender(c context.Context, user *model.User) ([]map[string]interface{}, error) {
+	var result []map[string]interface{}
+
+	err := a.db.WithContext(c).Model(&model.Advertisement{}).
+		Where("target_gender = ? and target_country = ?", user.Gender, user.Country).Find(result).Error
+
+	return result, err
 }
