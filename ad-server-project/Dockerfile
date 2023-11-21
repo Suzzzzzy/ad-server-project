@@ -21,4 +21,4 @@ RUN cp /build/wait-for-it.sh .
 
 EXPOSE 3000
 
-CMD ["/ad-server-project"]
+CMD ["/app/ad-server-project"]
