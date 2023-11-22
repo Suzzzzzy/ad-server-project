@@ -19,7 +19,7 @@ func NewAdvertisementUsecase(a model.AdvertisementRepository) model.Advertisemen
 func (a advertisementUsecase) GetByCountryAndGender(c context.Context, user *model.User) ([]model.Advertisement, error) {
 	res, err := a.advertisementRepo.GetByCountryAndGender(c, user)
 	if err != nil {
-		println("advertisementUsecase > advertisementRepo.GetByCountryAndGender Error: %v", err)
+		println("advertisementUsecase > advertisementRepo.GetByCountryAndGender Error: %v \n", err)
 		return nil, err
 	}
 	if len(res) == 0 {

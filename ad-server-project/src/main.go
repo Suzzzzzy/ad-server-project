@@ -1,11 +1,14 @@
 package main
 
 import (
+	"ad-server-project/src/adapter/http"
 	"ad-server-project/src/repository"
+	"ad-server-project/src/usecase"
 	"database/sql"
 	"fmt"
-
+	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
+	ht "net/http"
 )
 
 func main() {
@@ -17,6 +20,19 @@ func main() {
 	}
 	fmt.Println("DB connection success")
 
+	router := gin.Default()
+
+	router.GET("/", func(c *gin.Context) {
+		c.String(ht.StatusOK, "Hello, World!")
+	})
+
 	advertisementRepo := repository.NewAdvertisementRepository(db)
-	fmt.Print(advertisementRepo)
+	advertisementUsecase := usecase.NewAdvertisementUsecase(advertisementRepo)
+	http.NewAdvertisementHandler(router, advertisementUsecase)
+
+	err = router.Run(":8080")
+	if err != nil {
+		panic(err)
+	}
+
 }
