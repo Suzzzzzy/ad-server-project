@@ -2,7 +2,6 @@ package model
 
 import (
 	"context"
-	"github.com/guregu/null"
 )
 
 type Advertisement struct {
@@ -19,7 +18,7 @@ type Advertisement struct {
 	// 광고가 송출 가능한 국가 정보
 	TargetCountry string `json:"target_country"`
 	// 광고의 성별 타게팅 정보 (M: 남자 타게팅, F: 여자 타게팅)
-	TargetGender null.String `json:"target_gender"`
+	TargetGender string `json:"target_gender"`
 	// 광고를 클릭했을 때 받을 수 있는 리워드
 	Reward int `json:"reward"`
 }
@@ -38,7 +37,8 @@ type AdvertisementUsecase interface {
 }
 
 func ConvertAdwithWeight(list []Advertisement) []AdWithWeight {
-	result := make([]AdWithWeight, len(list))
+	var result []AdWithWeight
+
 	for _, ad := range list {
 		result = append(result, AdWithWeight{
 			Ad:     ad,

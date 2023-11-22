@@ -19,7 +19,7 @@ func NewAdvertisementUsecase(a model.AdvertisementRepository) model.Advertisemen
 func (a advertisementUsecase) GetByCountryAndGender(c context.Context, user *model.User) ([]model.Advertisement, error) {
 	res, err := a.advertisementRepo.GetByCountryAndGender(c, user)
 	if err != nil {
-		println("advertisementUsecase > advertisementRepo.GetByCountryAndGender Error: %v \n", err)
+		println("advertisementUsecase > advertisementRepo.GetByCountryAndGender Error \n", err)
 		return nil, err
 	}
 	if len(res) == 0 {
@@ -41,21 +41,20 @@ func pickAdRandWithWeight(list []model.AdWithWeight, num int) []model.Advertisem
 		totalWeight += item.Weight
 	}
 
-	for range list {
+	for i := 0; i < num; i++ {
 		// 랜덤하게 선택된 확률
 		randomProb := rand.Float64()
 		// 누적 확률 변수
 		cumulativeProb := 0.0
 
-		for i := 0; i < num; i++ {
-			for _, item := range list {
-				cumulativeProb += float64(item.Weight) / float64(totalWeight)
-				if randomProb <= cumulativeProb {
-					result = append(result, item.Ad)
-					break
-				}
+		for _, item := range list {
+			cumulativeProb += float64(item.Weight) / float64(totalWeight)
+			if randomProb <= cumulativeProb {
+				result = append(result, item.Ad)
+				break
 			}
 		}
 	}
+
 	return result
 }

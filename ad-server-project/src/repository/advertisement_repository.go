@@ -4,8 +4,8 @@ import (
 	"ad-server-project/src/domain/model"
 	"context"
 	"database/sql"
-	"fmt"
 	"github.com/sirupsen/logrus"
+	"log"
 )
 
 type advertisementRepository struct {
@@ -59,7 +59,7 @@ func (a *advertisementRepository) GetByCountryAndGender(c context.Context, user 
 	query := `SELECT * FROM advertisement WHERE target_gender = ? and target_country = ?`
 	list, err := a.fetch(c, query, user.Gender, user.Country)
 	if err != nil {
-		fmt.Printf("advertisementRepository query Error: %v \n", err)
+		log.Printf("advertisementRepository query Error: %v \n", err)
 		return nil, err
 	}
 

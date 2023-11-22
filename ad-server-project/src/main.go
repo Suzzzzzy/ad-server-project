@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", "root", "root", "mysql", "3306", "mysql")
+	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", "root", "root", "mysql", "3306", "ad_server_project")
 	db, err := sql.Open(`mysql`, connection)
 	if err != nil {
 		fmt.Println("DB connection failed:", err)
