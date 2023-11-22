@@ -19,6 +19,7 @@ WORKDIR /app
 RUN cp /build/ad-server-project .
 RUN cp /build/wait-for-it.sh .
 
-EXPOSE 3000
+EXPOSE 8080
 
 CMD ["/app/ad-server-project"]
+

@@ -1,6 +1,9 @@
 package model
 
-import "context"
+import (
+	"context"
+	"github.com/guregu/null"
+)
 
 type Advertisement struct {
 	// 광고를 구분하는 고유 아이디
@@ -16,15 +19,31 @@ type Advertisement struct {
 	// 광고가 송출 가능한 국가 정보
 	TargetCountry string `json:"target_country"`
 	// 광고의 성별 타게팅 정보 (M: 남자 타게팅, F: 여자 타게팅)
-	TargetGender string `json:"target_gender"`
+	TargetGender null.String `json:"target_gender"`
 	// 광고를 클릭했을 때 받을 수 있는 리워드
 	Reward int `json:"reward"`
 }
 
+type AdWithWeight struct {
+	Ad     Advertisement
+	Weight int
+}
+
 type AdvertisementRepository interface {
-	GetByCountryAndGender(c context.Context, user *User) ([]map[string]interface{}, error)
+	GetByCountryAndGender(c context.Context, user *User) ([]Advertisement, error)
 }
 
 type AdvertisementUsecase interface {
 	GetByCountryAndGender(c context.Context, user *User) ([]Advertisement, error)
+}
+
+func ConvertAdwithWeight(list []Advertisement) []AdWithWeight {
+	result := make([]AdWithWeight, len(list))
+	for _, ad := range list {
+		result = append(result, AdWithWeight{
+			Ad:     ad,
+			Weight: ad.Weight,
+		})
+	}
+	return result
 }
