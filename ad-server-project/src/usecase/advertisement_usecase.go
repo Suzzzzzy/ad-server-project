@@ -16,7 +16,7 @@ func NewAdvertisementUsecase(a model.AdvertisementRepository) model.Advertisemen
 	}
 }
 
-func (a advertisementUsecase) GetByCountryAndGender(c context.Context, user *model.User) ([]model.Advertisement, error) {
+func (a advertisementUsecase) GetByCountryAndGender(c context.Context, user *model.User) ([]model.AdvertisementMinInfo, error) {
 	res, err := a.advertisementRepo.GetByCountryAndGender(c, user)
 	if err != nil {
 		println("advertisementUsecase > advertisementRepo.GetByCountryAndGender Error \n", err)
@@ -28,7 +28,9 @@ func (a advertisementUsecase) GetByCountryAndGender(c context.Context, user *mod
 
 	adWithWeightList := model.ConvertAdwithWeight(res)
 
-	result := pickAdRandWithWeight(adWithWeightList, 3)
+	pickedAd := pickAdRandWithWeight(adWithWeightList, 3)
+
+	result := model.ConvertAdMinInfo(pickedAd)
 
 	return result, nil
 }

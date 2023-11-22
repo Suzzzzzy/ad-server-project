@@ -28,12 +28,18 @@ type AdWithWeight struct {
 	Weight int
 }
 
+type AdvertisementMinInfo struct {
+	ImageUrl   string `json:"image_url"`
+	LandingUrl string `json:"landing_url"`
+	Reward     int    `json:"reward"`
+}
+
 type AdvertisementRepository interface {
 	GetByCountryAndGender(c context.Context, user *User) ([]Advertisement, error)
 }
 
 type AdvertisementUsecase interface {
-	GetByCountryAndGender(c context.Context, user *User) ([]Advertisement, error)
+	GetByCountryAndGender(c context.Context, user *User) ([]AdvertisementMinInfo, error)
 }
 
 func ConvertAdwithWeight(list []Advertisement) []AdWithWeight {
@@ -43,6 +49,18 @@ func ConvertAdwithWeight(list []Advertisement) []AdWithWeight {
 		result = append(result, AdWithWeight{
 			Ad:     ad,
 			Weight: ad.Weight,
+		})
+	}
+	return result
+}
+
+func ConvertAdMinInfo(list []Advertisement) []AdvertisementMinInfo {
+	var result []AdvertisementMinInfo
+	for _, ad := range list {
+		result = append(result, AdvertisementMinInfo{
+			ImageUrl:   ad.ImageUrl,
+			LandingUrl: ad.LandingUrl,
+			Reward:     ad.Reward,
 		})
 	}
 	return result
