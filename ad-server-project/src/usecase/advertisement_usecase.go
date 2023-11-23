@@ -19,7 +19,7 @@ func NewAdvertisementUsecase(a model.AdvertisementRepository) model.Advertisemen
 	}
 }
 
-func (a advertisementUsecase) GetByCountryAndGender(c context.Context, userId int, userGender string, userCountry string) ([]model.AdvertisementMinInfo, error) {
+func (a *advertisementUsecase) GetByCountryAndGender(c context.Context, userId int, userGender string, userCountry string) ([]model.AdvertisementMinInfo, error) {
 	user := &model.User{
 		ID:      userId,
 		Gender:  userGender,
@@ -157,6 +157,6 @@ func pickAdByWeightPctrMixed(list []model.Advertisement, userId int, num int) []
 	return result
 }
 
-func (a advertisementUsecase) UpdateReward(c context.Context, id int, reward int) error {
+func (a *advertisementUsecase) UpdateReward(c context.Context, id int, reward int) error {
 	return a.advertisementRepo.UpdateReward(c, id, reward)
 }

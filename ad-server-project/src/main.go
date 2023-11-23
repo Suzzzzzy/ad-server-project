@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", "root", "root", "mysql", "3306", "ad_server_project")
+	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", "root", "root", "mysql", "3306", "ad_server_project")
 	db, err := sql.Open(`mysql`, connection)
 	if err != nil {
 		fmt.Println("DB connection failed:", err)
@@ -29,6 +29,13 @@ func main() {
 	advertisementRepo := repository.NewAdvertisementRepository(db)
 	advertisementUsecase := usecase.NewAdvertisementUsecase(advertisementRepo)
 	http.NewAdvertisementHandler(router, advertisementUsecase)
+
+	userRepo := repository.NewUserRepository(db)
+	transactionRepo := repository.NewTransactionRepository(db)
+	rewardDetailRepo := repository.NewRewardDetailRepository(db)
+	rewardDetailUsecas := usecase.NewRewardDetailUsecase(rewardDetailRepo, userRepo, transactionRepo)
+	http.NewRewardDetailHandler(router, rewardDetailUsecas)
+
 
 	err = router.Run(":8080")
 	if err != nil {

@@ -1,10 +1,10 @@
 package repository
 
 import (
+	"ad-server-project/src/domain"
 	"ad-server-project/src/domain/model"
 	"context"
 	"database/sql"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"log"
 )
@@ -85,7 +85,7 @@ func (a *advertisementRepository) UpdateReward(c context.Context, id int, reward
 	}
 
 	if affect != 1 {
-		return fmt.Errorf("[Error] No row was affected for reward with ID %v", id)
+		return domain.ErrNotFound
 	}
 	return nil
 }
