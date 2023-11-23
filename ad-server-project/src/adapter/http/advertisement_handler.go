@@ -28,10 +28,10 @@ func NewAdvertisementHandler(r *gin.Engine, ad model.AdvertisementUsecase) {
 }
 
 func (a *AdvertisementHandler) GetByCountryAndGender(c *gin.Context) {
-	id := c.Query("id")
+	id := c.Query("user_id")
 	userId, _ := strconv.Atoi(id)
-	userGender := c.Query("gender")
-	userCountry := c.Query("country")
+	userGender := c.Query("user_gender")
+	userCountry := c.Query("user_country")
 	ctx := c.Request.Context()
 
 	user := &model.User{
