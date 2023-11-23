@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"ad-server-project/src/domain"
 	"ad-server-project/src/domain/model"
 	"context"
 	"database/sql"
@@ -64,4 +65,27 @@ func (a *advertisementRepository) GetByCountryAndGender(c context.Context, user 
 	}
 
 	return list, nil
+}
+
+func (a *advertisementRepository) UpdateReward(c context.Context, id int, reward int) error {
+	query := `UPDATE advertisement set reward = ? WHERE id = ?`
+
+	stmt, err := a.Conn.PrepareContext(c, query)
+	if err != nil {
+		return err
+	}
+
+	res, err := stmt.ExecContext(c, reward, id)
+	if err != nil {
+		return err
+	}
+	affect, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affect != 1 {
+		return domain.ErrNotFound
+	}
+	return nil
 }

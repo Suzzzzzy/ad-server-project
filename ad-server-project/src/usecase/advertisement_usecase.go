@@ -19,7 +19,12 @@ func NewAdvertisementUsecase(a model.AdvertisementRepository) model.Advertisemen
 	}
 }
 
-func (a advertisementUsecase) GetByCountryAndGender(c context.Context, user *model.User) ([]model.AdvertisementMinInfo, error) {
+func (a *advertisementUsecase) GetByCountryAndGender(c context.Context, userId int, userGender string, userCountry string) ([]model.AdvertisementMinInfo, error) {
+	user := &model.User{
+		ID:      userId,
+		Gender:  userGender,
+		Country: userCountry,
+	}
 	res, err := a.advertisementRepo.GetByCountryAndGender(c, user)
 	if err != nil {
 		println("advertisementUsecase > advertisementRepo.GetByCountryAndGender Error \n", err)
@@ -150,4 +155,8 @@ func pickAdByWeightPctrMixed(list []model.Advertisement, userId int, num int) []
 	result = append(result, adByWeight...)
 
 	return result
+}
+
+func (a *advertisementUsecase) UpdateReward(c context.Context, id int, reward int) error {
+	return a.advertisementRepo.UpdateReward(c, id, reward)
 }

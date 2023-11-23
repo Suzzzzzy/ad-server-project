@@ -6,7 +6,7 @@ import (
 
 type Advertisement struct {
 	// 광고를 구분하는 고유 아이디
-	ID int `json:"id" gorm:"primary_key"`
+	ID int `json:"id"`
 	// 광고의 이름
 	Name string `json:"name"`
 	// 유저에게 보일 광고의 이미지 주소
@@ -36,10 +36,12 @@ type AdvertisementMinInfo struct {
 
 type AdvertisementRepository interface {
 	GetByCountryAndGender(c context.Context, user *User) ([]Advertisement, error)
+	UpdateReward(c context.Context, id int, reward int) error
 }
 
 type AdvertisementUsecase interface {
-	GetByCountryAndGender(c context.Context, user *User) ([]AdvertisementMinInfo, error)
+	GetByCountryAndGender(c context.Context,  userId int, userGender string, userCountry string) ([]AdvertisementMinInfo, error)
+	UpdateReward(c context.Context, id int, reward int) error
 }
 
 func ConvertAdwithWeight(list []Advertisement) []AdWithWeight {

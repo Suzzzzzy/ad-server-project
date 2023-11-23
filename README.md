@@ -16,7 +16,7 @@ databases-->>server: List of ads
 server-->>client: Ad response
 ```
 
-광고 데이터는 [ad_campaigns.json](./resources/ad_campaigns.json) 파일에서 확인할 수 있습니다. 사용하실 데이터베이스에 주어진 파일을 임포트 하여 사용합니다. 파일에는 다음과 같은 정보가 담겨있습니다.
+광고 데이터는 [ad_campaigns.json](../resources/ad_campaigns.json) 파일에서 확인할 수 있습니다. 사용하실 데이터베이스에 주어진 파일을 임포트 하여 사용합니다. 파일에는 다음과 같은 정보가 담겨있습니다.
 
 | Key              | Value                                                                  |
 | ---------------- | ---------------------------------------------------------------------- |
@@ -150,7 +150,7 @@ server-->>client: Succeeded or failed
 # 과제 가이드
 - 회사에서 실제 업무를 진행한다고 생각하고 과제를 수행해주세요.
 - 익숙한 언어, 프레임워크, 데이터베이스를 자유롭게 사용합니다. 용도에 맞게 여러 개의 데이터베이스를 사용하는 것도 가능합니다.
-- docker-compose로 구성되어야 합니다. [샘플 프로젝트](./sample-project/README.md)를 참조합니다.
+- docker-compose로 구성되어야 합니다. [샘플 프로젝트](docker_readme/README.md)를 참조합니다.
 - Hexagonal architecture, clean architecture 또는 이와 유사한 아키텍처 패턴을 적용하는 것을 권장합니다.
 - API 인증에 대한 부분은 고려하지 않아도 됩니다.
 - Swagger를 통해 API 명세를 작성했다면 서버를 직접 띄우지 않아도 명세를 확인할 수 있도록 해주세요. 환경 문제로 인해 서버를 직접 띄우지 못하는 경우가 종종 있습니다.

@@ -1,6 +1,8 @@
 package domain
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	// ErrInternalServerError will throw if any the Internal Server Error happen
@@ -11,4 +13,6 @@ var (
 	ErrConflict = errors.New("your Item already exist")
 	// ErrBadParamInput will throw if the given request-body or params is not valid
 	ErrBadParamInput = errors.New("given Param is not valid")
+	// ErrUserNotFound will throw if the requested item is not exists
+	ErrUserNotFound = errors.New("requested User is not found")
 )
