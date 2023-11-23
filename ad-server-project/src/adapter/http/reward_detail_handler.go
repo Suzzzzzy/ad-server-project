@@ -19,6 +19,7 @@ func NewRewardDetailHandler(r *gin.Engine, re model.RewardDetailUsecase) {
 	{
 		router.POST("/plus", handler.EarnReward)
 		router.POST("/minus", handler.DeductReward)
+		router.GET("/user", handler.GetRecent)
 	}
 }
 
@@ -48,4 +49,16 @@ func (r *RewardDetailHandler) DeductReward(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, nil)
+}
+
+func(r *RewardDetailHandler) GetRecent(c *gin.Context) {
+	userId , _ := strconv.Atoi(c.Query("user_id"))
+	ctx := c.Request.Context()
+
+	result, err := r.RewardDetailUsecase.GetRecent(ctx, userId)
+	if err != nil {
+		c.JSON(GetStatusCode(err), ResponseError{Message: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, result)
 }

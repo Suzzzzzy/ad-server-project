@@ -67,7 +67,7 @@ CREATE TABLE `reward_detail` (
                                  `user_id` int NOT NULL,
                                  `reward` int NOT NULL,
                                  `reward_type` varchar(45) NOT NULL,
-                                 `created_at` datetime DEFAULT NULL,
+                                 `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
                                  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

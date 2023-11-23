@@ -79,3 +79,13 @@ func (r *rewardDetailRepository) DeductRewardDetail(c context.Context, reward in
 
 	return nil
 }
+
+func (r *rewardDetailRepository) GetRecent(c context.Context, userId int) (res []model.RewardDetail, err error) {
+	query := `SELECT * FROM reward_detail WHERE user_id = ? AND created_at >= CURDATE() - INTERVAL 1 WEEK AND created_at < CURDATE()`
+	list, err := r.fetch(c, query, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return list, nil
+}

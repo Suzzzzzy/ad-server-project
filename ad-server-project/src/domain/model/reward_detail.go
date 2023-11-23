@@ -25,9 +25,12 @@ type RewardDetailRepository interface {
 	EarnRewardDetail(c context.Context, adId int, reward int, userId int, rewardType string) error
 	// DeductRewardDetail 유저의 리워드 차감
 	DeductRewardDetail(c context.Context, reward int, userId int, rewardType string) error
+	// GetRecent 최근 일주일 리워드 내역 조회
+	GetRecent(c context.Context, userId int) ([]RewardDetail, error)
 }
 
 type RewardDetailUsecase interface {
 	EarnRewardDetail(c context.Context, adId int, reward int, userId int) error
 	DeductRewardDetail(c context.Context, reward int, userId int) error
+	GetRecent(c context.Context, userId int) ([]RewardDetail, error)
 }
