@@ -36,10 +36,12 @@ type AdvertisementMinInfo struct {
 
 type AdvertisementRepository interface {
 	GetByCountryAndGender(c context.Context, user *User) ([]Advertisement, error)
+	UpdateReward(c context.Context, id int, reward int) error
 }
 
 type AdvertisementUsecase interface {
-	GetByCountryAndGender(c context.Context, user *User) ([]AdvertisementMinInfo, error)
+	GetByCountryAndGender(c context.Context,  userId int, userGender string, userCountry string) ([]AdvertisementMinInfo, error)
+	UpdateReward(c context.Context, id int, reward int) error
 }
 
 func ConvertAdwithWeight(list []Advertisement) []AdWithWeight {

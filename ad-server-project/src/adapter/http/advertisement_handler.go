@@ -24,28 +24,8 @@ func NewAdvertisementHandler(r *gin.Engine, ad model.AdvertisementUsecase) {
 	router := r.Group("/ad-campaigns")
 	{
 		router.GET("", handler.GetByCountryAndGender)
+		router.PUT("/reward", handler.UpdateReward)
 	}
-}
-
-func (a *AdvertisementHandler) GetByCountryAndGender(c *gin.Context) {
-	id := c.Query("user_id")
-	userId, _ := strconv.Atoi(id)
-	userGender := c.Query("user_gender")
-	userCountry := c.Query("user_country")
-	ctx := c.Request.Context()
-
-	user := &model.User{
-		ID:      userId,
-		Gender:  userGender,
-		Country: userCountry,
-	}
-
-	result, err := a.AdvertisementUsecase.GetByCountryAndGender(ctx, user)
-	if err != nil {
-		c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, result)
 }
 
 func getStatusCode(err error) int {
@@ -64,4 +44,40 @@ func getStatusCode(err error) int {
 	default:
 		return http.StatusInternalServerError
 	}
+}
+
+func (a *AdvertisementHandler) GetByCountryAndGender(c *gin.Context) {
+	id := c.Query("user_id")
+	userId, _ := strconv.Atoi(id)
+	userGender := c.Query("user_gender")
+	userCountry := c.Query("user_country")
+	ctx := c.Request.Context()
+
+	result, err := a.AdvertisementUsecase.GetByCountryAndGender(ctx, userId, userGender, userCountry)
+	if err != nil {
+		c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, result)
+}
+
+func (a *AdvertisementHandler) UpdateReward(c *gin.Context) {
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ResponseError{Message: "Invalid ID"})
+		return
+	}
+	reward, err := strconv.Atoi(c.Query("reward"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ResponseError{Message: "Invalid reward"})
+		return
+	}
+	ctx := c.Request.Context()
+
+	err = a.AdvertisementUsecase.UpdateReward(ctx, id, reward)
+	if err != nil {
+		c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, nil)
 }
