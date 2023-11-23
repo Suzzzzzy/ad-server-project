@@ -6,7 +6,6 @@ import (
 	"ad-server-project/src/utils"
 	"context"
 	"math/rand"
-	"sort"
 	"time"
 )
 
@@ -30,7 +29,24 @@ func (a advertisementUsecase) GetByCountryAndGender(c context.Context, user *mod
 		return nil, nil
 	}
 
-	pickedAd := pickAdByWeight(res, 3)
+	var pickedAd []model.Advertisement
+	num := 3
+	if num > len(res) {
+		num = len(res)
+	}
+
+	// userId로 정책 선택
+	methodChoice := user.ID % 4
+	switch methodChoice {
+	case 0:
+		pickedAd = pickAdByRandom(res, num)
+	case 1:
+		pickedAd = pickAdByWeight(res, num)
+	case 2:
+		pickedAd = pickAdByPctr(res, user.ID, num)
+	case 3:
+		pickedAd = pickAdByWeightPctrMixed(res, user.ID, num)
+	}
 
 	result := model.ConvertAdMinInfo(pickedAd)
 
@@ -40,9 +56,6 @@ func (a advertisementUsecase) GetByCountryAndGender(c context.Context, user *mod
 // pickAdRand random 정책: 랜덤으로 정렬하는 정책
 func pickAdByRandom(list []model.Advertisement, num int) []model.Advertisement {
 	listLength := len(list)
-	if num > listLength {
-		num = listLength
-	}
 
 	rand.Seed(time.Now().UnixNano())
 
@@ -65,9 +78,6 @@ func pickAdByRandom(list []model.Advertisement, num int) []model.Advertisement {
 
 // pickAdByWeight weight 정책: weight 기반의 정책
 func pickAdByWeight(list []model.Advertisement, num int) []model.Advertisement {
-	if num > len(list){
-		num = len(list)
-	}
 	adWithWeightList := model.ConvertAdwithWeight(list)
 
 	var result []model.Advertisement
@@ -97,10 +107,6 @@ func pickAdByWeight(list []model.Advertisement, num int) []model.Advertisement {
 
 // pickAdByPctr pctr 정책: 예측된 CTR의 내림차순으로 정렬하는 정책
 func pickAdByPctr(list []model.Advertisement, userId int, num int) []model.Advertisement {
-	if num > len(list){
-		num = len(list)
-	}
-
 	var adIdList []int
 	for _, ad := range list {
 		adIdList = append(adIdList, ad.ID)
@@ -133,6 +139,15 @@ func pickAdByPctr(list []model.Advertisement, userId int, num int) []model.Adver
 }
 
 // pickAdByWeightPctrMixed weight_pctr_mixed 정책: 예측된 CTR이 가장 높은 광고를 첫 번째에 위치하고 나머지 두 광고는 weight 기반으로 정렬하는 정책
-func pickAdByWeightPctrMixed(list []model.Advertisement, num int) []model.Advertisement {
+func pickAdByWeightPctrMixed(list []model.Advertisement, userId int, num int) []model.Advertisement {
+	var result []model.Advertisement
+	// CTR 높은 광고 1개
+	adByPctr := pickAdByPctr(list, userId, 1)
+	result = append(result, adByPctr...)
 
+	// 나머지는 weight 기반 광고
+	adByWeight := pickAdByWeight(list, num-1)
+	result = append(result, adByWeight...)
+
+	return result
 }

@@ -44,12 +44,18 @@ ad-server-project
 
 
 # 프로젝트 실행 방법
+도커가 설치되어있어야 합니다.
+
+[Docker](https://www.docker.com/get-started) 설치 & 로그인 (tested on v4.3.0)
+
+
 프로젝트를 다운받아 프로젝트 폴더로 이동합니다.
 ```bash
 git clone https://github.com/buzzvil-assignments/sooutt-naver.com.git
 
 cd ad-server-project
 ```
+
 서버를 실행합니다.
 ```bash
 make up
