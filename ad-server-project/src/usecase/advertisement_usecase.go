@@ -26,20 +26,20 @@ func (a advertisementUsecase) GetByCountryAndGender(c context.Context, user *mod
 		return nil, nil
 	}
 
-	adWithWeightList := model.ConvertAdwithWeight(res)
-
-	pickedAd := pickAdRandWithWeight(adWithWeightList, 3)
+	pickedAd := pickAdRandWithWeight(res, 3)
 
 	result := model.ConvertAdMinInfo(pickedAd)
 
 	return result, nil
 }
 
-func pickAdRandWithWeight(list []model.AdWithWeight, num int) []model.Advertisement {
+func pickAdRandWithWeight(list []model.Advertisement, num int) []model.Advertisement {
+	adWithWeightList := model.ConvertAdwithWeight(list)
+
 	var result []model.Advertisement
 
 	totalWeight := 0
-	for _, item := range list {
+	for _, item := range adWithWeightList {
 		totalWeight += item.Weight
 	}
 
@@ -49,7 +49,7 @@ func pickAdRandWithWeight(list []model.AdWithWeight, num int) []model.Advertisem
 		// 누적 확률 변수
 		cumulativeProb := 0.0
 
-		for _, item := range list {
+		for _, item := range adWithWeightList {
 			cumulativeProb += float64(item.Weight) / float64(totalWeight)
 			if randomProb <= cumulativeProb {
 				result = append(result, item.Ad)
@@ -60,3 +60,5 @@ func pickAdRandWithWeight(list []model.AdWithWeight, num int) []model.Advertisem
 
 	return result
 }
+
+func pickAdRand(list []model.)
