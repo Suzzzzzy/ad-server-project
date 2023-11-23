@@ -80,3 +80,7 @@ func (r *rewardDetailUsecase) DeductRewardDetail(c context.Context, reward int, 
 	}
 	return nil
 }
+
+func (r *rewardDetailUsecase) GetRecent(c context.Context, userId int) ([]model.RewardDetail, error) {
+	return r.rewardDetailRepo.GetRecent(c, userId)
+}

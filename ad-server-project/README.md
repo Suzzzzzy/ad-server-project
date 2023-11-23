@@ -1,4 +1,5 @@
 # 목차
+
 1. [프로젝트명](#프로젝트명)
 2. [프로젝트 설명](#프로젝트-설명)
 3. [프로젝트 실행 방법](#프로젝트-실행-방법)
@@ -15,11 +16,12 @@
 # 프로젝트 설명
 
 ### 개발
-- Go언어를 사용했습니다.
-- **Gin** web 프레임워크를 사용했습니다.
+- 개발언어: Golang:1.18
+- web 프레임워크: [Gin](https://github.com/gin-gonic/gin)
+- docker-compose:3.8
 
 ### 데이터베이스
-- MySQL
+- MySQL:8.0.31
 - 관계형 데이터베이스로 가장 많이 쓰이는 MySQL 사용했습니다.
 
 ### 설계
@@ -64,7 +66,7 @@ make up
 - MySQL 데이터베이스를 완전하게 띄운 후에 서버를 실행하도록 했습니다.
 - 데이터베이스를 docker-compose 로 구성하면서, 필요한 리소스 데이터를 initdb sql 파일을 이용하여 import 합니다.
 
-http://localhost/ 접속했을 때, "Hello world"가 출력된다면 서버가 정상적으로 실행된 것입니다.
+http://localhost:8080/ 혹은 http://0.0.0.0:8080/ 접속했을 때, "Hello world"가 출력된다면 서버가 정상적으로 실행된 것입니다.
 
 ## API 명세서
 https://documenter.getpostman.com/view/19629582/2s9YeBfEc8
