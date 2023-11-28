@@ -89,3 +89,17 @@ func (a *advertisementRepository) UpdateReward(c context.Context, id int, reward
 	}
 	return nil
 }
+
+func (a *advertisementRepository) GetById(c context.Context, id int) (result model.Advertisement, err error) {
+	query := `SELECT * FROM advertisement WHERE id = ?`
+	res, err := a.fetch(c, query, id)
+	if err != nil {
+		return model.Advertisement{}, err
+	}
+	if len(res) > 0 {
+		result = res[0]
+	} else {
+		return result, domain.ErrNotFound
+	}
+	return result, err
+}
