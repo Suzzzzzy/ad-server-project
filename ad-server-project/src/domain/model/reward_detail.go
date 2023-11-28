@@ -16,8 +16,8 @@ type RewardDetail struct {
 	// 적립 및 차감된 리워드 값
 	Reward int `json:"reward"`
 	// 적립/차감 타입(plus/minus)
-	RewardType string `json:"type"`
-	CreatedAt time.Time `json:"created_at"`
+	RewardType string    `json:"type"`
+	CreatedAt  time.Time `json:"created_at"`
 }
 
 type RewardDetailRepository interface {
@@ -27,10 +27,18 @@ type RewardDetailRepository interface {
 	DeductRewardDetail(c context.Context, reward int, userId int, rewardType string) error
 	// GetRecent 최근 일주일 리워드 내역 조회
 	GetRecent(c context.Context, userId int) ([]RewardDetail, error)
+	// GetAllRewardDetail 모든 리워드 내역 조회
+	GetAllRewardDetail(c context.Context, userId int) ([]RewardDetail, error)
 }
 
 type RewardDetailUsecase interface {
 	EarnRewardDetail(c context.Context, adId int, reward int, userId int) error
 	DeductRewardDetail(c context.Context, reward int, userId int) error
 	GetRecent(c context.Context, userId int) ([]RewardDetail, error)
+	GetRewardBalance(c context.Context, userId int) (int, error)
 }
+
+const (
+	Plus  = "plus"
+	Minus = "minus"
+)

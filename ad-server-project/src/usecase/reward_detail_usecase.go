@@ -9,20 +9,20 @@ import (
 
 type rewardDetailUsecase struct {
 	rewardDetailRepo model.RewardDetailRepository
-	userRepo model.UserRepository
-	transactionRepo model.TransactionRepository
+	userRepo         model.UserRepository
+	transactionRepo  model.TransactionRepository
 }
 
 func NewRewardDetailUsecase(r model.RewardDetailRepository, u model.UserRepository, t model.TransactionRepository) model.RewardDetailUsecase {
 	return &rewardDetailUsecase{
 		rewardDetailRepo: r,
-		userRepo: u,
-		transactionRepo: t,
+		userRepo:         u,
+		transactionRepo:  t,
 	}
 }
 
 func (r *rewardDetailUsecase) EarnRewardDetail(c context.Context, adId int, reward int, userId int) error {
-	rewardType := "plus"
+	rewardType := model.Plus
 
 	user, err := r.userRepo.GetById(c, userId)
 	if err != nil {
@@ -50,7 +50,7 @@ func (r *rewardDetailUsecase) EarnRewardDetail(c context.Context, adId int, rewa
 }
 
 func (r *rewardDetailUsecase) DeductRewardDetail(c context.Context, reward int, userId int) error {
-	rewardType := "minus"
+	rewardType := model.Plus
 
 	user, err := r.userRepo.GetById(c, userId)
 	if err != nil {
@@ -83,4 +83,12 @@ func (r *rewardDetailUsecase) DeductRewardDetail(c context.Context, reward int, 
 
 func (r *rewardDetailUsecase) GetRecent(c context.Context, userId int) ([]model.RewardDetail, error) {
 	return r.rewardDetailRepo.GetRecent(c, userId)
+}
+
+func (r *rewardDetailUsecase) GetRewardBalance(c context.Context, userId int) (int, error) {
+	user, err := r.userRepo.GetById(c, userId)
+	if err != nil {
+		return -1, err
+	}
+	return user.Reward, nil
 }
