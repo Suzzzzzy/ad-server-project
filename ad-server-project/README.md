@@ -25,8 +25,7 @@
 - 관계형 데이터베이스로 가장 많이 쓰이는 MySQL 사용했습니다.
 
 ### 설계
-- Clean Architecture
-- 계층이 분리되어 있어 domain 확장이 쉽고 간단한 서버 구현에 적합한 Clean Architecture로 설계했습니다.
+폴더 구조는 아래와 같습니다.
 ```bash
 ad-server-project
 ├── src
@@ -43,6 +42,17 @@ ad-server-project
 - repository: 데이터베이스와 연결, 데이터 처리를 담당합니다.
 - usecase: 데이터를 가공, 비지니스 로직을 처리합니다.
 - adapter: usecase의 output을 가져와 표시합니다.
+
+테이블 설계는 아래와 같습니다.
+![img.png](img.png)
+- advertisement: 광고
+- reward_detail: 리워드 내역
+  - ad_id: 리워드를 적립할 때, 리워드에 해당하는 광고의 고유값을 저장합니다.
+  - user_id: 리워드 내역의 당사자인 유저의 고유값을 저장합니다.
+  - reward_type은 plus(적립), minus(차감) 두가지로 저장합니다.
+- users: 사용자
+  - gender, country: 유저의 성별, 국가 정보를 저장합니다.
+  - reward: 유저가 보유한 리워드 값을 저장합니다.
 
 
 # 프로젝트 실행 방법
@@ -117,3 +127,4 @@ make td-usecase
 ### 추가적으로 고안한 방법
 - 중복된 계정, 혹은 기기에서의 리워드 요청을 차단합니다.
   - 같은 광고로 연속 두번 이상 리워드 적립을 요청하는 경우 db를 조회하여 에러 처리합니다.
+  - https의 공개키 암호화 방식의 아이디어를 적용해서 공개키로 광고 ID를 암호화 한 후, 서버에서 비밀키로 복호화 시도 했을 때 복호화가 안되는 요청은 차단합니다.
