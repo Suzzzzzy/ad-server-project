@@ -4,7 +4,6 @@ import (
 	"ad-server-project/src/adapter"
 	"ad-server-project/src/domain/model"
 	"context"
-	"log"
 	"math/rand"
 	"sort"
 	"time"
@@ -135,7 +134,6 @@ func pickAdByPctr(list []model.Advertisement, userId int, num int) []model.Adver
 	for i, ad := range adIdList {
 		adIdToPctr[ad] = pctr.PCTR[i]
 	}
-	log.Printf("맵핑 %v", adIdToPctr)
 
 	// 광고 정렬
 	sort.Slice(list, func(i, j int) bool {
