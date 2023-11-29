@@ -62,7 +62,7 @@ func (ts *AdvertisementRepoTestSuite) Test_GetByCountryAndGender() {
 		// when
 		result, err := ts.advertisementRepo.GetByCountryAndGender(context.Background(), testUser)
 		if err != nil {
-			ts.Fail("repository error: %v", err)
+			ts.Fail("repository error", err)
 		}
 		// then
 		ts.Equal(1, len(result))
@@ -84,10 +84,10 @@ func (ts *AdvertisementRepoTestSuite) Test_UpdateReward() {
 		err := ts.advertisementRepo.UpdateReward(context.Background(), id, reward)
 		// then
 		if err != nil {
-			ts.Fail("repository error: %v", err)
+			ts.Fail("repository error", err)
 		}
 		if err := ts.mock.ExpectationsWereMet(); err != nil {
-			ts.Fail("expectations were not met: %v", err)
+			ts.Fail("expectations were not met", err)
 		}
 
 	})
@@ -103,10 +103,10 @@ func (ts *AdvertisementRepoTestSuite) Test_UpdateReward() {
 		err := ts.advertisementRepo.UpdateReward(context.Background(), id, reward)
 		// then
 		if err == nil {
-			ts.Fail("expected prepare error, got: %v", err)
+			ts.Fail("expected prepare error, got", err)
 		}
 		if err := ts.mock.ExpectationsWereMet(); err != nil {
-			ts.Fail("expectations were not met: %v", err)
+			ts.Fail("expectations were not met", err)
 		}
 
 	})
@@ -132,7 +132,7 @@ func (ts *AdvertisementRepoTestSuite) Test_GetById() {
 		}
 		// then
 		if err := ts.mock.ExpectationsWereMet(); err != nil {
-			ts.Fail("expectations were not met: %v", err)
+			ts.Fail("expectations were not met", err)
 		}
 		ts.Equal(expectedResult[0], result)
 	})
@@ -146,10 +146,10 @@ func (ts *AdvertisementRepoTestSuite) Test_GetById() {
 		_, err := ts.advertisementRepo.GetById(context.Background(), id)
 		// then
 		if err == nil {
-			ts.Fail("expected prepare error, got: %v", err)
+			ts.Fail("expected prepare error, got", err)
 		}
 		if err := ts.mock.ExpectationsWereMet(); err != nil {
-			ts.Fail("expectations were not met: %v", err)
+			ts.Fail("expectations were not met", err)
 		}
 	})
 }

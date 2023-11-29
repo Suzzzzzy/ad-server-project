@@ -60,7 +60,7 @@ func (ts *RewardDetailRepoTestSuite) Test_EarnRewardDetail() {
 		}
 		// then
 		if err := ts.mock.ExpectationsWereMet(); err != nil {
-			ts.Fail("expectations were not met: %v", err)
+			ts.Fail("expectations were not met", err)
 		}
 	})
 }
@@ -83,7 +83,7 @@ func (ts *RewardDetailRepoTestSuite) Test_DeductRewardDetail() {
 		}
 		// then
 		if err := ts.mock.ExpectationsWereMet(); err != nil {
-			ts.Fail("expectations were not met: %v", err)
+			ts.Fail("expectations were not met", err)
 		}
 	})
 }
@@ -108,7 +108,7 @@ func (ts *RewardDetailRepoTestSuite) Test_GetRecent() {
 		}
 		// then
 		if err := ts.mock.ExpectationsWereMet(); err != nil {
-			ts.Fail("expectations were not met: %v", err)
+			ts.Fail("expectations were not met", err)
 		}
 		ts.Equal(expectedResult, result)
 	})
@@ -134,7 +134,7 @@ func (ts *RewardDetailRepoTestSuite) Test_GetAllRewardDetail() {
 		}
 		// then
 		if err := ts.mock.ExpectationsWereMet(); err != nil {
-			ts.Fail("expectations were not met: %v", err)
+			ts.Fail("expectations were not met", err)
 		}
 		ts.Equal(expectedResult, result)
 	})
