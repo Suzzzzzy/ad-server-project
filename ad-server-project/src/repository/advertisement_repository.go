@@ -57,7 +57,7 @@ func (a *advertisementRepository) fetch(ctx context.Context, query string, args 
 }
 
 func (a *advertisementRepository) GetByCountryAndGender(c context.Context, user *model.User) ([]model.Advertisement, error) {
-	query := `SELECT * FROM advertisement WHERE target_gender = ? and target_country = ?`
+	query := `SELECT * FROM advertisement WHERE target_gender = ? AND target_country = ?`
 	list, err := a.fetch(c, query, user.Gender, user.Country)
 	if err != nil {
 		log.Printf("advertisementRepository query Error: %v \n", err)
