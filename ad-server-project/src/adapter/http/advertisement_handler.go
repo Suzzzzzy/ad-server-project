@@ -7,7 +7,6 @@ import (
 	"strconv"
 )
 
-
 type AdvertisementHandler struct {
 	AdvertisementUsecase model.AdvertisementUsecase
 }
@@ -44,17 +43,23 @@ func (a *AdvertisementHandler) UpdateReward(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, ResponseError{Message: "Invalid ID"})
 		return
 	}
-	reward, err := strconv.Atoi(c.Query("reward"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, ResponseError{Message: "Invalid reward"})
+	var req map[string]interface{}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	reward, ok := req["reward"].(float64)
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
 	ctx := c.Request.Context()
 
-	err = a.AdvertisementUsecase.UpdateReward(ctx, id, reward)
+	err = a.AdvertisementUsecase.UpdateReward(ctx, id, int(reward))
 	if err != nil {
 		c.JSON(GetStatusCode(err), ResponseError{Message: err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, nil)
+	c.JSON(http.StatusOK, "Ad's reward is updated successfully")
 }

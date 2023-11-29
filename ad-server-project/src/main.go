@@ -33,9 +33,8 @@ func main() {
 	userRepo := repository.NewUserRepository(db)
 	transactionRepo := repository.NewTransactionRepository(db)
 	rewardDetailRepo := repository.NewRewardDetailRepository(db)
-	rewardDetailUsecas := usecase.NewRewardDetailUsecase(rewardDetailRepo, userRepo, transactionRepo)
+	rewardDetailUsecas := usecase.NewRewardDetailUsecase(rewardDetailRepo, userRepo, transactionRepo, advertisementRepo)
 	http.NewRewardDetailHandler(router, rewardDetailUsecas)
-
 
 	err = router.Run(":8080")
 	if err != nil {

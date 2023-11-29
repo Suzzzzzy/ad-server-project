@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 type rewardDetailRepository struct {
@@ -31,23 +32,28 @@ func (r *rewardDetailRepository) fetch(ctx context.Context, query string, args .
 		}
 	}()
 
+	var createdAt time.Time
 	result = make([]model.RewardDetail, 0)
 	for rows.Next() {
 		t := model.RewardDetail{}
-		err = rows.Scan(
+		if err = rows.Scan(
 			&t.ID,
 			&t.AdId,
 			&t.UserId,
 			&t.Reward,
 			&t.RewardType,
-			&t.CreatedAt,
-		)
-
-		if err != nil {
+			&createdAt,
+		); err != nil {
 			logrus.Error(err)
 			return nil, err
 		}
+		t.CreatedAt = createdAt
 		result = append(result, t)
+	}
+
+	if err = rows.Err(); err != nil {
+		logrus.Error(err)
+		return nil, err
 	}
 	return result, nil
 }
@@ -81,11 +87,21 @@ func (r *rewardDetailRepository) DeductRewardDetail(c context.Context, reward in
 }
 
 func (r *rewardDetailRepository) GetRecent(c context.Context, userId int) (res []model.RewardDetail, err error) {
-	query := `SELECT * FROM reward_detail WHERE user_id = ? AND created_at >= CURDATE() - INTERVAL 1 WEEK AND created_at < CURDATE()`
-	list, err := r.fetch(c, query, userId)
+	query := `SELECT * FROM reward_detail WHERE user_id = ? AND created_at >= NOW() - INTERVAL 1 WEEK ORDER BY created_at DESC`
+	res, err = r.fetch(c, query, userId)
 	if err != nil {
 		return nil, err
 	}
 
-	return list, nil
+	return res, nil
+}
+
+func (r *rewardDetailRepository) GetAllRewardDetail(c context.Context, userId int) (res []model.RewardDetail, err error) {
+	query := `SELECT * FROM reward_detail WHERE user_id = ?`
+	res, err = r.fetch(c, query, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }

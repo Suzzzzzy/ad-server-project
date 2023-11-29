@@ -5,6 +5,7 @@ import (
 	"ad-server-project/src/domain/model"
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"log"
 )
@@ -57,7 +58,7 @@ func (a *advertisementRepository) fetch(ctx context.Context, query string, args 
 }
 
 func (a *advertisementRepository) GetByCountryAndGender(c context.Context, user *model.User) ([]model.Advertisement, error) {
-	query := `SELECT * FROM advertisement WHERE target_gender = ? and target_country = ?`
+	query := `SELECT * FROM advertisement WHERE target_gender = ? AND target_country = ?`
 	list, err := a.fetch(c, query, user.Gender, user.Country)
 	if err != nil {
 		log.Printf("advertisementRepository query Error: %v \n", err)
@@ -85,7 +86,21 @@ func (a *advertisementRepository) UpdateReward(c context.Context, id int, reward
 	}
 
 	if affect != 1 {
-		return domain.ErrNotFound
+		return fmt.Errorf("No change in reward value")
 	}
 	return nil
+}
+
+func (a *advertisementRepository) GetById(c context.Context, id int) (result model.Advertisement, err error) {
+	query := `SELECT * FROM advertisement WHERE id = ?`
+	res, err := a.fetch(c, query, id)
+	if err != nil {
+		return model.Advertisement{}, err
+	}
+	if len(res) > 0 {
+		result = res[0]
+	} else {
+		return result, domain.ErrNotFound
+	}
+	return result, err
 }
