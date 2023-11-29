@@ -94,7 +94,11 @@ func (r *rewardDetailUsecase) DeductRewardDetail(c context.Context, reward int, 
 }
 
 func (r *rewardDetailUsecase) GetRecent(c context.Context, userId int) ([]model.RewardDetail, error) {
-	return r.rewardDetailRepo.GetRecent(c, userId)
+	user, err := r.userRepo.GetById(c, userId)
+	if err != nil {
+		return nil, err
+	}
+	return r.rewardDetailRepo.GetRecent(c, user.ID)
 }
 
 func (r *rewardDetailUsecase) GetRewardBalance(c context.Context, userId int) (int, error) {

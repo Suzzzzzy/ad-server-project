@@ -69,12 +69,14 @@ func (ts *RewardDetailUsecaseTestSuite) Test_EarnRewardDetail() {
 		ts.NoError(result)
 	})
 	ts.Run("유저의 리워드 적립 - 실패(유저 존재 X)", func() {
+		ts.SetupTest()
 		ts.mockUserRepo.On("GetById", mock.Anything, mock.Anything).Return(user, domain.ErrUserNotFound)
 
 		result := ts.rewardDetailUsecase.EarnRewardDetail(context.Background(), ad.ID, ad.Reward, user.ID)
 		ts.Equal(domain.ErrUserNotFound, result)
 	})
 	ts.Run("유저의 리워드 적립 - 실패(광고와 리워드 정보가 일치하지 않음)", func() {
+		ts.SetupTest()
 		ts.mockUserRepo.On("GetById", mock.Anything, mock.Anything).Return(user, nil)
 		ts.mockAdvertisementRepo.On("GetById", mock.Anything, mock.Anything).Return(nil, domain.ErrNotFound)
 		ts.mockTransactionRepo.On("Transaction", mock.Anything, mock.Anything).Return(domain.ErrNotFound)
@@ -98,6 +100,7 @@ func (ts *RewardDetailUsecaseTestSuite) Test_DeductRewardDetail() {
 		ts.NoError(result)
 	})
 	ts.Run("유저의 리워드 차감 - 실패(리워드는 음수값이 될 수 없다)", func() {
+		ts.SetupTest()
 		ts.mockUserRepo.On("GetById", mock.Anything, mock.Anything).Return(user, nil)
 		ts.mockRewardDetailRepo.On("DeductRewardDetail", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)
 		ts.mockUserRepo.On("UpdateReward", mock.Anything, mock.Anything).Return(fmt.Errorf("no more rewards can be deducted"))
@@ -109,9 +112,31 @@ func (ts *RewardDetailUsecaseTestSuite) Test_DeductRewardDetail() {
 	})
 }
 
+func (ts *RewardDetailUsecaseTestSuite) Test_GetRecent() {
+	ts.Run("유저의 최근 리워드 내역 조회 - 성공", func() {
+		user := model.User{ID: 1}
+		rewardDetails := generateTestRewardDetail(3, user.ID, "plus")
+		ts.mockUserRepo.On("GetById", mock.Anything, mock.Anything).Return(user, nil)
+		ts.mockRewardDetailRepo.On("GetRecent", mock.Anything, mock.Anything).Return(rewardDetails, nil)
+
+		result, err := ts.rewardDetailUsecase.GetRecent(context.Background(), user.ID)
+		ts.NoError(err)
+		ts.Equal(len(rewardDetails), len(result))
+	})
+	ts.Run("유저의 최근 리워드 내역 조회 - 실패(존재하지 않는 유저)", func() {
+		ts.SetupTest()
+		user := model.User{ID: 1}
+		ts.mockUserRepo.On("GetById", mock.Anything, mock.Anything).Return(model.User{}, domain.ErrUserNotFound)
+
+		_, err := ts.rewardDetailUsecase.GetRecent(context.Background(), user.ID)
+		ts.Error(err)
+		ts.Equal(domain.ErrUserNotFound, err)
+	})
+}
+
 func (ts *RewardDetailUsecaseTestSuite) Test_GetBalance() {
 	user := model.User{ID: 1, Reward: 10}
-	ts.Run("유저의 리워드 잔액 조회", func() {
+	ts.Run("유저의 리워드 잔액 조회 - 성공", func() {
 		ts.mockUserRepo.On("GetById", mock.Anything, mock.Anything).Return(user, nil)
 
 		result, err := ts.rewardDetailUsecase.GetRewardBalance(context.Background(), user.ID)
@@ -119,6 +144,7 @@ func (ts *RewardDetailUsecaseTestSuite) Test_GetBalance() {
 		ts.Equal(user.Reward, result)
 	})
 	ts.Run("유저의 리워드 잔액 조회 - 실패(존재하지 않는 유저)", func() {
+		ts.SetupTest()
 		ts.mockUserRepo.On("GetById", mock.Anything, mock.Anything).Return(model.User{}, domain.ErrUserNotFound)
 
 		_, err := ts.rewardDetailUsecase.GetRewardBalance(context.Background(), user.ID)
