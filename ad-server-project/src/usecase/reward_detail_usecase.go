@@ -5,7 +5,6 @@ import (
 	"ad-server-project/src/domain/model"
 	"context"
 	"database/sql"
-	"fmt"
 )
 
 type rewardDetailUsecase struct {
@@ -69,14 +68,13 @@ func (r *rewardDetailUsecase) DeductRewardDetail(c context.Context, reward int, 
 		return err
 	}
 	// 트랜잭션
-	err = r.transactionRepo.Transaction(context.Background(), func(tx *sql.Tx) error {
-		err = r.rewardDetailRepo.DeductRewardDetail(c, reward, userId, rewardType)
+	txErr := r.transactionRepo.Transaction(context.Background(), func(tx *sql.Tx) error {
+		if user.Reward < reward {
+			return domain.ErrBadParamInput
+		}
+		err := r.rewardDetailRepo.DeductRewardDetail(c, reward, userId, rewardType)
 		if err != nil {
 			return err
-		}
-
-		if user.Reward < reward {
-			return fmt.Errorf("no more rewards can be deducted")
 		}
 		user.Reward -= reward
 
@@ -87,8 +85,8 @@ func (r *rewardDetailUsecase) DeductRewardDetail(c context.Context, reward int, 
 		return nil
 	})
 
-	if err != nil {
-		return err
+	if txErr != nil {
+		return txErr
 	}
 	return nil
 }
