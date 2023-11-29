@@ -12,13 +12,13 @@ import (
 
 type AdvertisementUsecaseTestSuite struct {
 	suite.Suite
-	AdvertisementUsecase  *advertisementUsecase
+	advertisementUsecase  *advertisementUsecase
 	mockAdvertisementRepo *mocks.AdvertisementRepository
 }
 
 func (ts *AdvertisementUsecaseTestSuite) SetupTest() {
 	ts.mockAdvertisementRepo = new(mocks.AdvertisementRepository)
-	ts.AdvertisementUsecase = &advertisementUsecase{
+	ts.advertisementUsecase = &advertisementUsecase{
 		advertisementRepo: ts.mockAdvertisementRepo,
 	}
 }
@@ -54,7 +54,7 @@ func (ts *AdvertisementUsecaseTestSuite) Test_GetByCountryAndGender() {
 		ads := generateTestAd(5)
 		ts.mockAdvertisementRepo.On("GetByCountryAndGender", mock.Anything, mock.Anything).Return(ads, nil)
 		// when
-		result, err := ts.AdvertisementUsecase.GetByCountryAndGender(context.Background(), userId, "W", "KR")
+		result, err := ts.advertisementUsecase.GetByCountryAndGender(context.Background(), userId, "W", "KR")
 		ts.NoError(err)
 		ts.Equal(3, len(result))
 	})
