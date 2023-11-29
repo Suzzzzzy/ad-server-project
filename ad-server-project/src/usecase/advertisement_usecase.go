@@ -3,9 +3,10 @@ package usecase
 import (
 	"ad-server-project/src/adapter"
 	"ad-server-project/src/domain/model"
-	"ad-server-project/src/utils"
 	"context"
+	"log"
 	"math/rand"
+	"sort"
 	"time"
 )
 
@@ -92,27 +93,34 @@ func pickAdByWeight(list []model.Advertisement, num int) []model.Advertisement {
 		totalWeight += item.Weight
 	}
 
-	for i := 0; i < num; i++ {
-		// 랜덤하게 선택된 확률
-		randomProb := rand.Float64()
-		// 누적 확률 변수
-		cumulativeProb := 0.0
+	// Precalculate cumulative probabilities
+	cumulativeProbs := make([]float64, len(adWithWeightList))
+	cumProb := 0.0
+	for i, item := range adWithWeightList {
+		cumProb += float64(item.Weight) / float64(totalWeight)
+		cumulativeProbs[i] = cumProb
+	}
 
-		for _, item := range adWithWeightList {
-			cumulativeProb += float64(item.Weight) / float64(totalWeight)
-			if randomProb <= cumulativeProb {
-				result = append(result, item.Ad)
-				break
-			}
-		}
+	for i := 0; i < num; i++ {
+		// Random probability
+		randomProb := rand.Float64()
+
+		// Find the index where randomProb falls in the cumulative probabilities
+		index := sort.Search(len(cumulativeProbs), func(j int) bool {
+			return cumulativeProbs[j] >= randomProb
+		})
+
+		// Append the selected advertisement to the result
+		result = append(result, adWithWeightList[index].Ad)
 	}
 
 	return result
+
 }
 
 // pickAdByPctr pctr 정책: 예측된 CTR의 내림차순으로 정렬하는 정책
 func pickAdByPctr(list []model.Advertisement, userId int, num int) []model.Advertisement {
-	var adIdList []int
+	adIdList := make([]int, len(list))
 	for _, ad := range list {
 		adIdList = append(adIdList, ad.ID)
 	}
@@ -127,20 +135,14 @@ func pickAdByPctr(list []model.Advertisement, userId int, num int) []model.Adver
 	for i, ad := range adIdList {
 		adIdToPctr[ad] = pctr.PCTR[i]
 	}
+	log.Printf("맵핑 %v", adIdToPctr)
 
-	sortedAdId := utils.SortMapByValue(adIdToPctr)
+	// 광고 정렬
+	sort.Slice(list, func(i, j int) bool {
+		return adIdToPctr[list[i].ID] > adIdToPctr[list[j].ID]
+	})
 
-	var result []model.Advertisement
-	for i := 0; i < num; i++ {
-		for _, ad := range list {
-			if sortedAdId[i].Key == ad.ID {
-				result = append(result, ad)
-				break
-			}
-		}
-	}
-
-	return result
+	return list[:num]
 }
 
 // pickAdByWeightPctrMixed weight_pctr_mixed 정책: 예측된 CTR이 가장 높은 광고를 첫 번째에 위치하고 나머지 두 광고는 weight 기반으로 정렬하는 정책
