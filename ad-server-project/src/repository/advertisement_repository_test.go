@@ -122,10 +122,10 @@ func (ts *AdvertisementRepoTestSuite) Test_GetById() {
 		for _, ad := range expectedResult {
 			rows = rows.AddRow(ad.ID, ad.Name, ad.ImageUrl, ad.LandingUrl, ad.Weight, ad.TargetCountry, ad.TargetGender, ad.Reward)
 		}
-		// when
 		ts.mock.ExpectQuery("SELECT (.+) FROM advertisement WHERE id = \\?").
 			WithArgs(id).
 			WillReturnRows(rows)
+		// when
 		result, err := ts.advertisementRepo.GetById(context.Background(), id)
 		if err != nil {
 			ts.Fail("repository error - %v", err)
