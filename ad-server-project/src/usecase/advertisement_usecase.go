@@ -131,7 +131,7 @@ func pickAdByPctr(list []model.Advertisement, userId int, num int) []model.Adver
 	sortedAdId := utils.SortMapByValue(adIdToPctr)
 
 	var result []model.Advertisement
-	for i :=0; i < num; i++ {
+	for i := 0; i < num; i++ {
 		for _, ad := range list {
 			if sortedAdId[i].Key == ad.ID {
 				result = append(result, ad)
@@ -158,5 +158,9 @@ func pickAdByWeightPctrMixed(list []model.Advertisement, userId int, num int) []
 }
 
 func (a *advertisementUsecase) UpdateReward(c context.Context, id int, reward int) error {
-	return a.advertisementRepo.UpdateReward(c, id, reward)
+	ad, err := a.advertisementRepo.GetById(c, id)
+	if err != nil {
+		return err
+	}
+	return a.advertisementRepo.UpdateReward(c, ad.ID, reward)
 }

@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"ad-server-project/src/domain"
 	"ad-server-project/src/domain/model"
 	"ad-server-project/src/domain/model/mocks"
 	"context"
@@ -57,5 +58,35 @@ func (ts *AdvertisementUsecaseTestSuite) Test_GetByCountryAndGender() {
 		result, err := ts.advertisementUsecase.GetByCountryAndGender(context.Background(), userId, "W", "KR")
 		ts.NoError(err)
 		ts.Equal(3, len(result))
+	})
+}
+
+func (ts *AdvertisementUsecaseTestSuite) Test_UpdateReward() {
+	// given
+	ad := generateTestAd(1)[0]
+	ts.Run("광고의 리워드값 업데이트 - 성공", func() {
+		ts.mockAdvertisementRepo.On("GetById", mock.Anything, mock.Anything).Return(ad, nil)
+		ts.mockAdvertisementRepo.On("UpdateReward", mock.Anything, mock.Anything, mock.Anything).Return(nil)
+		// when
+		result := ts.advertisementUsecase.UpdateReward(context.Background(), ad.ID, 10)
+		// then
+		ts.NoError(result)
+	})
+	ts.Run("광고의 리워드값 업데이트 - 실패(해당 광고 존재하지 않음)", func() {
+		ts.mockAdvertisementRepo.On("GetById", mock.Anything, mock.Anything).Return(model.Advertisement{}, domain.ErrNotFound)
+		// when
+		result := ts.advertisementUsecase.UpdateReward(context.Background(), ad.ID, 10)
+		// then
+		ts.Error(result)
+		ts.Equal(domain.ErrNotFound, result)
+	})
+	ts.Run("광고의 리워드값 업데이트 - 실패(리워드값이 동일하여 수정되지 않음)", func() {
+		ts.mockAdvertisementRepo.On("GetById", mock.Anything, mock.Anything).Return(ad, nil)
+		ts.mockAdvertisementRepo.On("UpdateReward", mock.Anything, mock.Anything, mock.Anything).Return(fmt.Errorf("No change in reward value"))
+		// when
+		result := ts.advertisementUsecase.UpdateReward(context.Background(), ad.ID, 10)
+		// then
+		ts.Error(result)
+		ts.Equal("No change in reward value", result.Error())
 	})
 }
